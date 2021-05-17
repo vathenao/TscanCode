@@ -20,9 +20,6 @@
     <ClInclude Include="cmdlineparser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="tscexecutor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="tscthreadexecutor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -43,6 +40,9 @@
     </ClInclude>
     <ClInclude Include="..\common\crashhelp.h">
       <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="tscancodeexecutor.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

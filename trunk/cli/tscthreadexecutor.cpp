@@ -215,7 +215,7 @@ void* TscThreadExecutor::threadProc(void *args)
 			TSC_LOCK_LEAVE(&threadExecutor->_fileSync);
 			break;
 		}
-
+		time_t start = clock();
 		CCodeFile* curFile = *threadExecutor->_checkList_iter;
 		const std::string &file = curFile->GetFullPath();
 		const std::size_t fileSize = curFile->GetSize();
@@ -252,12 +252,14 @@ void* TscThreadExecutor::threadProc(void *args)
 		}
 
 		TSC_LOCK_ENTER(&threadExecutor->_fileSync);
-
 		threadExecutor->_processedSize += fileSize;
 		threadExecutor->_processedFiles++;
 		if (!threadExecutor->_settings.quiet) {
 			TSC_LOCK_ENTER(&threadExecutor->_reportSync);
-			TscanCodeExecutor::reportStatus(threadIndex, threadExecutor->_processedFiles, threadExecutor->_totalFiles, threadExecutor->_processedSize, threadExecutor->_totalFileSize, threadExecutor->_analyzeFile, false, file);
+			TscanCodeExecutor::reportStatus(threadIndex, threadExecutor->_processedFiles,
+				threadExecutor->_totalFiles, threadExecutor->_processedSize,
+				threadExecutor->_totalFileSize, threadExecutor->_analyzeFile,
+				false, file, difftime(clock(), start));
 			TSC_LOCK_LEAVE(&threadExecutor->_reportSync);
 		}
 

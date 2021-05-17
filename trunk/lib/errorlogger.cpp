@@ -22,6 +22,7 @@
 #include "tokenlist.h"
 #include "token.h"
 #include "symboldatabase.h"
+#include "gitblamemgr.h"
 
 #include <tinyxml2.h>
 
@@ -50,6 +51,7 @@ InternalError::InternalError(const Token *tok, const std::string &errorMsg, Type
 
 ErrorLogger::ErrorMessage::ErrorMessage()
     : _severity(Severity::none), _cwe(0U), _inconclusive(false)
+    , m_gitParser(new GitBlameParser)
 {
 }
 
@@ -59,14 +61,15 @@ ErrorLogger::ErrorMessage::ErrorMessage(const std::list<FileLocation> &callStack
 	_id(id),
     _severity(severity),   // severity for this error message
     _cwe(0U),
-    _inconclusive(inconclusive)
+    _inconclusive(inconclusive),
+    m_gitParser(new GitBlameParser)
 {
     // set the summary and verbose messages
     setmsg(msg);
 }
 
 ErrorLogger::ErrorMessage::ErrorMessage(const std::list<const Token*>& callstack, const TokenList* list, Severity::SeverityType severity, ErrorType::ErrorTypeEnum type, const std::string& id, const std::string& msg, bool inconclusive)
-    : _type(type), _id(id), _severity(severity), _cwe(0U), _inconclusive(inconclusive)
+    : _type(type), _id(id), _severity(severity), _cwe(0U), _inconclusive(inconclusive), m_gitParser(new GitBlameParser)
 {
     // Format callstack
     for (std::list<const Token *>::const_iterator it = callstack.begin(); it != callstack.end(); ++it) {
@@ -313,16 +316,22 @@ std::string ErrorLogger::ErrorMessage::toXML_codetrace(bool verbose, int version
 	}
 	printer.PushAttribute("file", _callStack.back().getfile().c_str());
 	printer.PushAttribute("line", _callStack.back().line);
-	
 	printer.PushAttribute("id", ErrorType::ToString(_type).c_str());
 	printer.PushAttribute("subid", _id.c_str());
 	printer.PushAttribute("severity", Settings::Instance()->GetCheckSeverity(_id.c_str()).c_str());
 	printer.PushAttribute("msg", fixInvalidChars(verbose ? _verboseMessage : _shortMessage).c_str());
 	printer.PushAttribute("web_identify", fixInvalidChars(_webIdentify).c_str());
 	printer.PushAttribute("func_info", fixInvalidChars(_funcinfo).c_str());
-
 	std::string filename = stringToXml(_callStack.back().getfile());
 	unsigned int fline = _callStack.back().line;
+    if (m_gitParser)
+    {
+        gitBlame(filename, fline);
+        auto infos = m_gitParser->getBlameInfos();
+        BlameLineInfo info = infos.size() > 0 ? infos[0] : BlameLineInfo();
+        if(!info.author.empty())
+            printer.PushAttribute("author", info.author.c_str());
+    }
 
 	fstream fFile(filename.c_str());
 
@@ -357,7 +366,20 @@ std::string ErrorLogger::ErrorMessage::toXML_codetrace(bool verbose, int version
 	}
 	
 	return "";
-	
+}
+
+void ErrorLogger::ErrorMessage::gitBlame(const std::string& fullName,
+    const unsigned int line) const
+{
+    if (!m_gitParser)
+        return;
+
+    BlameOption opt;
+    char buffer[32] = {'\0'};
+    sprintf(buffer, "%d,%d", line, line);
+    buffer[31] = '\0';
+    opt.addOption("-L", buffer);
+    m_gitParser->blame(fullName, opt);
 }
 
 void ErrorLogger::ErrorMessage::findAndReplace(std::string &source, const std::string &searchFor, const std::string &replaceWith)

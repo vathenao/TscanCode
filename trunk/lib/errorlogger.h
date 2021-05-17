@@ -26,6 +26,7 @@
 
 #include "config.h"
 #include "suppressions.h"
+#include "gitblamemgr.h"
 
 class Token;
 class TokenList;
@@ -309,7 +310,10 @@ public:
 
 		void SetFuncInfo(const std::string& funcInfo) { _funcinfo = funcInfo; }
 
-    private:
+private:
+    void gitBlame(const std::string& fullName, const unsigned int line) const;
+
+private:
         /**
          * Replace all occurrences of searchFor with replaceWith in the
          * given source.
@@ -326,6 +330,7 @@ public:
 
         /** Verbose message */
         std::string _verboseMessage;
+		std::unique_ptr<GitBlameParser> m_gitParser;
     };
 
     ErrorLogger() { }

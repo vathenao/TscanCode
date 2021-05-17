@@ -197,6 +197,9 @@
     <ClCompile Include="tscancode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="gitblamemgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="checkbufferoverrun.h">
@@ -386,6 +389,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="checkstatistic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gitblamemgr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

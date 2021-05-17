@@ -75,7 +75,9 @@ public:
      * @param sizedone The sum of sizes of the files checked.
      * @param sizetotal The total sizes of the files.
      */
-    static void reportStatus(int threadIndex, std::size_t fileindex, std::size_t filecount, std::size_t sizedone, std::size_t sizetotal, bool bAnalyze,  bool bStart, const std::string& fileName);
+    static void reportStatus(int threadIndex, std::size_t fileindex, std::size_t filecount,
+        std::size_t sizedone, std::size_t sizetotal, bool bAnalyze,
+        bool bStart, const std::string& fileName, unsigned int time = 0);
 
     /**
      * @param fn file name to be used from exception handler
@@ -173,6 +175,8 @@ private:
      */
     bool errorlist;
 
+    time_t m_start;
+    time_t m_end;
 };
 
 #endif // tscancodeEXECUTOR_H

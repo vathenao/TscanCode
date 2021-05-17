@@ -58,7 +58,7 @@
 using namespace tinyxml2;
 
 TscanCodeExecutor::TscanCodeExecutor()
-	: _settings(0), time1(0), errorlist(false)
+	: _settings(0), time1(0), errorlist(false), m_start(0), m_end(0)
 {
 }
 
@@ -180,6 +180,7 @@ bool TscanCodeExecutor::parseFromArgs(TscanCode *tscancode, int argc, const char
 
 int TscanCodeExecutor::check(int argc, const char* const argv[])
 {
+	m_start = clock();
 #ifdef _WIN32
 	StartWinCrashRecored();
 #endif
@@ -882,8 +883,6 @@ int TscanCodeExecutor::check_internal(TscanCode& tscancode, int /*argc*/, const 
 	}
 
 	uninit();
-
-
 	_settings = 0;
 	if (returnValue)
 		return settings._exitCode;
@@ -958,11 +957,15 @@ void TscanCodeExecutor::reportInfo(const ErrorLogger::ErrorMessage &msg)
 	reportErr(msg);
 }
 
-void TscanCodeExecutor::reportStatus(int threadIndex, std::size_t fileindex, std::size_t filecount, std::size_t sizedone, std::size_t sizetotal, bool bAnalyze,  bool bStart, const std::string& fileName)
+void TscanCodeExecutor::reportStatus(int threadIndex, std::size_t fileindex,
+	std::size_t filecount, std::size_t sizedone, std::size_t sizetotal,
+	bool bAnalyze,  bool bStart, const std::string& fileName, unsigned int time)
 {
 	if (filecount > 0) {
 		std::cout << (bAnalyze ? "[Analyzing]" : "[Checking]") << " [" << fileindex << '/' << filecount
-        << ", " << (sizetotal > 0 ? static_cast<long>(static_cast<long double>(sizedone) / sizetotal * 100) : 0) << "%] " << "[" << threadIndex << "] " << (bStart ? "[Start] " : "[Done] ") << fileName << std::endl;
+        << ", " << (sizetotal > 0 ? static_cast<long>(static_cast<long double>(sizedone) / sizetotal * 100) : 0)
+		<< "%] " << "[" << threadIndex << "] " << (bStart ? "[Start] " : "[Done] ")
+		<< fileName << "(" << time << "ms)" << std::endl;
 	}
 }
 
