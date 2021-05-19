@@ -19,6 +19,7 @@
 #ifndef filelisterH
 #define filelisterH
 
+#include "global.h"
 #include <string>
 #include <set>
 #include <map>
@@ -29,7 +30,7 @@ class PathMatch;
 /// @{
 
 /** @brief Cross-platform FileLister */
-class FileLister {
+class TSCOMMONLIB FileLister {
 public:
     /**
      * @brief Recursively add source files to a map.

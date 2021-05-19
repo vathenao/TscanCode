@@ -1,5 +1,6 @@
 #pragma once
 
+#include "global.h"
 #include <string>
 #include <vector>
 #include <map>
@@ -13,7 +14,7 @@ class CFileBase;
 class CFolder;
 class CCodeFile;
 
-class CFileDependTable
+class TSCOMMONLIB CFileDependTable
 {
 
 public:
@@ -115,7 +116,7 @@ private:
 };
 
 // 代码文件类
-class CCodeFile : public CFileBase
+class TSCOMMONLIB CCodeFile : public CFileBase
 {
 public:
 	CCodeFile(const char* szName, std::size_t size);

@@ -2,6 +2,7 @@
 #include "path.h"
 #include <windows.h>
 #include <regex>
+#include <sstream>
 
 namespace
 {

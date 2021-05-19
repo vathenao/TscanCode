@@ -21,7 +21,7 @@
 #define pathH
 //---------------------------------------------------------------------------
 
-#include "config.h"
+#include "global.h"
 #include <set>
 #include <string>
 #include <vector>
@@ -36,7 +36,7 @@
  * native separator for Unix-derived systems. When giving path to user
  * or for other functions we convert path separators back to native type.
  */
-class TSCANCODELIB Path {
+class TSCOMMONLIB Path {
 public:
     /**
      * Convert path to use native separators.
