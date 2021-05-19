@@ -24,4 +24,4 @@ ts_add_sources(
 	pathmatch.h
 )
 
-ts_add_library(tscommon STATIC ${TS_BIN_TARGET_PATH})
+ts_add_library(tcommon STATIC ${TS_BIN_TARGET_PATH})
